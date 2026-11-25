@@ -1,0 +1,5 @@
+# Profil prod : echantillonnage reduit
+management:
+  tracing:
+    sampling:
+      probability: 0.1

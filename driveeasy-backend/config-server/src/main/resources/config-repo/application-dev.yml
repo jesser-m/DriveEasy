@@ -1,0 +1,5 @@
+# Profil dev : echantillonnage a 100 %
+management:
+  tracing:
+    sampling:
+      probability: 1.0

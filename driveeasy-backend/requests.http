@@ -1,0 +1,80 @@
+### Requetes de test via l'API Gateway (extension "REST Client" VS Code ou IntelliJ HTTP Client)
+@gw = http://localhost:8080/api
+
+### Vehicules (filtres : categorie, carburant, statut, prixMax)
+GET {{gw}}/vehicules?categorie=SUV&prixMax=200
+
+### Detail / 404
+GET {{gw}}/vehicules/1
+###
+GET {{gw}}/vehicules/999
+
+### Creation (201) puis meme immatriculation (409)
+POST {{gw}}/vehicules
+Content-Type: application/json
+
+{"immatriculation":"111 TUN 2222","marque":"Seat","modele":"Ibiza","annee":2023,"couleur":"Rouge","categorie":"ECONOMIQUE","carburant":"ESSENCE","boite":"MANUELLE","nbPlaces":5,"kilometrage":1000,"prixJournalier":85}
+
+### Prix negatif -> 400
+POST {{gw}}/vehicules
+Content-Type: application/json
+
+{"immatriculation":"222 TUN 3333","marque":"Seat","modele":"Leon","annee":2023,"categorie":"BERLINE","carburant":"DIESEL","boite":"MANUELLE","nbPlaces":5,"kilometrage":0,"prixJournalier":-5}
+
+### Clients
+GET {{gw}}/clients?q=ben
+###
+GET {{gw}}/clients/1/eligibilite
+### Client trop jeune (id 4) et permis expire (id 5)
+GET {{gw}}/clients/4/eligibilite
+###
+GET {{gw}}/clients/5/eligibilite
+
+### Vehicules disponibles sur une periode (adapter les dates)
+GET {{gw}}/locations/disponibilites?dateDebut=2026-12-01&dateFin=2026-12-05
+
+### Simulation du prix
+POST {{gw}}/locations/simulation
+Content-Type: application/json
+
+{"clientId":3,"vehiculeId":3,"dateDebut":"2026-12-01","dateFinPrevue":"2026-12-04"}
+
+### Reservation (201)
+POST {{gw}}/locations
+Content-Type: application/json
+
+{"clientId":1,"vehiculeId":1,"dateDebut":"2026-12-01","dateFinPrevue":"2026-12-04"}
+
+### Meme vehicule, periode qui chevauche -> 409
+POST {{gw}}/locations
+Content-Type: application/json
+
+{"clientId":2,"vehiculeId":1,"dateDebut":"2026-12-02","dateFinPrevue":"2026-12-06"}
+
+### Client non eligible -> 409
+POST {{gw}}/locations
+Content-Type: application/json
+
+{"clientId":4,"vehiculeId":2,"dateDebut":"2026-12-01","dateFinPrevue":"2026-12-04"}
+
+### Depart (vehicule -> LOUE)
+PATCH {{gw}}/locations/1/depart
+
+### Suppression d'un vehicule loue -> 409
+DELETE {{gw}}/vehicules/1
+
+### Retour avec retard (dateRetourEffectif apres dateFinPrevue -> penalite)
+PATCH {{gw}}/locations/1/retour
+Content-Type: application/json
+
+{"kmRetour":18900,"dateRetourEffectif":"2026-12-06"}
+
+### Annulation d'une reservation
+PATCH {{gw}}/locations/2/annulation
+
+### Liste paginee / detail enrichi / statistiques
+GET {{gw}}/locations?statut=TERMINEE&page=0&size=5
+###
+GET {{gw}}/locations/1
+###
+GET {{gw}}/locations/statistiques

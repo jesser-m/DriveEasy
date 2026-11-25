@@ -1,0 +1,8 @@
+server:
+  port: 8081
+driveeasy:
+  datasource:
+    type: in-memory        # aucune base de donnees (interdit) : stockage en RAM
+  vehicule:
+    seed-enabled: true
+    annee-minimale: 1990

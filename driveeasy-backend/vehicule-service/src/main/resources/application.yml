@@ -1,0 +1,10 @@
+spring:
+  application:
+    name: vehicule-service
+  profiles:
+    active: dev
+  config:
+    import: configserver:http://localhost:8888
+logging:
+  pattern:
+    level: "%5p [${spring.application.name},%X{traceId:-},%X{spanId:-}]"

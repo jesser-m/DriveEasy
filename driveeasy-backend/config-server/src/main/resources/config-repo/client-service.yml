@@ -1,0 +1,11 @@
+server:
+  port: 8082
+driveeasy:
+  datasource:
+    type: in-memory
+  client:
+    seed-enabled: true
+    age-minimum: 21
+  services:
+    location-url: http://location-service
+    timeout-ms: 3000

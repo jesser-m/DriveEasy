@@ -1,0 +1,7 @@
+# Zipkin uniquement : les bases de donnees sont interdites dans ce projet (donnees en RAM).
+services:
+  zipkin:
+    image: openzipkin/zipkin
+    container_name: driveeasy-zipkin
+    ports:
+      - "9411:9411"

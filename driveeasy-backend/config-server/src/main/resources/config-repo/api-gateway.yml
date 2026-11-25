@@ -1,0 +1,35 @@
+server:
+  port: 8080
+spring:
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: false
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowedOrigins: "http://localhost:4200"
+            allowedMethods: "GET,POST,PUT,PATCH,DELETE,OPTIONS"
+            allowedHeaders: "*"
+            exposedHeaders: "X-Gateway-Request-Id"
+            maxAge: 3600
+      routes:
+        - id: vehicule-service
+          uri: lb://vehicule-service
+          predicates:
+            - Path=/api/vehicules/**
+          filters:
+            - StripPrefix=1
+        - id: client-service
+          uri: lb://client-service
+          predicates:
+            - Path=/api/clients/**
+          filters:
+            - StripPrefix=1
+        - id: location-service
+          uri: lb://location-service
+          predicates:
+            - Path=/api/locations/**
+          filters:
+            - StripPrefix=1
